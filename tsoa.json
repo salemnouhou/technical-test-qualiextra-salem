@@ -3,6 +3,16 @@
     "noImplicitAdditionalProperties": "throw-on-extras",
     "controllerPathGlobs": ["src/**/*Controller.ts"],
     "spec": {
+      "tags":  [
+      {
+        "name": "users",
+        "description": "Operations about users",
+        "externalDocs": {
+          "description": "Find out more about users",
+          "url": "http://swagger.io"
+        }
+      }
+    ],
       "outputDirectory": "build",
       "specVersion": 3,
       "securityDefinitions": {

@@ -10,6 +10,7 @@ import {
   Request,
   Response,
   SuccessResponse,
+  Tags,
 } from "tsoa";
 import { UserService, UpdateUserInput } from "../services/user.service";
 import { ValidateErrorJSON } from "../models/ValidateErrorJSON";
