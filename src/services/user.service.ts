@@ -12,6 +12,17 @@ export interface UpdateUserInput {
   isVerified?: boolean;
 }
 
+export class ServiceError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number = 500
+  ) {
+    super(message);
+    this.name = 'ServiceError';
+  }
+}
+
+
 export class UserService {
 
   // Trouver un user par son email (utilisé pour l’authentification)
@@ -68,73 +79,64 @@ export class UserService {
   ) {
     const isAdmin = currentUser.roles?.includes("ADMIN");
     const isOwner = currentUser.id === userId;
-
+  
     if (!isAdmin && !isOwner) {
       throw new Error("Forbidden");
     }
-
+  
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new Error("Utilisateur introuvable");
-
+  
     const data: any = {};
-
-    if (isOwner) {
-      // Changement du prénom et nom autorisé
+  
+  
+    if (isOwner && !isAdmin) {
       if (body.firstName !== undefined) data.firstName = body.firstName;
       if (body.lastName !== undefined) data.lastName = body.lastName;
-
-      // Changement d'email interdit si l'utilisateur n'a pas vérifié son email
+  
       if (body.email !== undefined) {
         if (!user.isVerified) {
           throw new Error("Vous devez vérifier votre email avant de pouvoir le modifier");
         }
-
-        // Vérifier si l'email est temporaire
+  
         if (isDisposableEmail(body.email)) {
           throw new Error("Veuillez utiliser une adresse email valide");
         }
-
-        // Vérifier si l'email existe déjà pour un autre utilisateur
-        const existingUser = await prisma.user.findUnique({
-          where: { email: body.email },
-        });
+  
+        const existingUser = await prisma.user.findUnique({ where: { email: body.email } });
         if (existingUser && existingUser.id !== userId) {
           throw new Error("Cet email est déjà utilisé par un autre compte");
         }
-
+  
         data.email = body.email;
       }
+  
     }
-
+  
     if (isAdmin) {
-      // L'admin peut modifier tout
       if (body.firstName !== undefined) data.firstName = body.firstName;
       if (body.lastName !== undefined) data.lastName = body.lastName;
-
+  
       if (body.email !== undefined) {
-        // Vérifier email temporaire et doublon
         if (isDisposableEmail(body.email)) {
           throw new Error("Veuillez utiliser une adresse email valide");
         }
-        const existingUser = await prisma.user.findUnique({
-          where: { email: body.email },
-        });
+        const existingUser = await prisma.user.findUnique({ where: { email: body.email } });
         if (existingUser && existingUser.id !== userId) {
           throw new Error("Cet email est déjà utilisé par un autre compte");
         }
         data.email = body.email;
       }
-
-      if (body.password !== undefined)
-        data.password = await bcrypt.hash(body.password, 10);
+  
+      if (body.password !== undefined) data.password = await bcrypt.hash(body.password, 10);
       if (body.roles !== undefined) data.roles = body.roles;
       if (body.isVerified !== undefined) data.isVerified = body.isVerified;
     }
-
+  
     if (Object.keys(data).length === 0) {
       throw new Error("Aucun champ valide à mettre à jour");
     }
-
+  
     return prisma.user.update({
       where: { id: userId },
       data,
@@ -149,6 +151,7 @@ export class UserService {
       },
     });
   }
+  
 
   // ADMIN: supprimer un user
   async deleteUser(userId: string) {

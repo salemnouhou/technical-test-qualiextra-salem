@@ -1,14 +1,12 @@
-import { Body, Controller, Post, Route, SuccessResponse, Response } from "tsoa";
+import { Body, Controller, Post, Route, SuccessResponse, Response, Tags } from "tsoa";
 import { AuthService } from "../services/auth.service";
+import { ValidateErrorJSON } from "../models/ValidateErrorJSON";
 
 interface LoginResponse {
   token: string;
 }
 
-interface ValidateErrorJSON {
-  message: string;
-  details?: { [name: string]: unknown };
-}
+
 
 const authService = new AuthService();
 

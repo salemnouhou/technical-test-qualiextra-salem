@@ -15,8 +15,9 @@ export class AuthService {
   
     const isTemp = isDisposableEmail(email);
     // console.log('isTemp', isTemp);
-    if (isTemp) throw new Error('Veuillez utiliser une adresse email valide');
-  
+    if (isTemp) throw new Error(
+      "L'utilisation d'adresses email temporaires ou jetables n'est pas autorisée. Veuillez fournir une adresse email valide pour continuer."
+    );  
     const hashedPassword = await bcrypt.hash(password, 10);
   
     const user = await prisma.user.create({

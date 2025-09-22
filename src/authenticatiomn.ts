@@ -1,6 +1,14 @@
 import { Request } from 'express';
 import { verifyToken } from './utils/auth';
 
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
+    }
+  }
+}
+
 export async function expressAuthentication(
   request: Request,
   securityName: string,
@@ -17,7 +25,8 @@ export async function expressAuthentication(
       throw new Error("Not authorized");
     }
 
-    return decoded;
+    request.user = decoded; // <-- injecte dans req.user
+    return true;            // retourne true pour TSOA
   }
   throw new Error("Unknown security");
 }
