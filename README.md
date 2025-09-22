@@ -77,6 +77,25 @@ node src/build/server.js
 
 Remarque : le script `start` du `package.json` cible `build/server.js`. Le build TypeScript sort dans `src/build`. Utilisez la commande ci‑dessus (`node src/build/server.js`) ou adaptez le script `start` si nécessaire.
 
+### Données de base et Seeder Prisma
+Un seeder Prisma crée automatiquement un compte administrateur par défaut.
+
+- Fichier : `prisma/seed.ts`
+- Exécuter manuellement le seeder :
+```bash
+yarn seed
+```
+
+- Exécution lors du build : le script `yarn build` lance aussi `prisma migrate deploy` puis `ts-node prisma/seed.ts`.
+
+- Admin par défaut créé :
+  - Email : `admin@admin.com`
+  - Mot de passe : `Admin123!`
+  - Rôles : `["ADMIN"]`
+  - Compte vérifié : `isVerified = true`
+
+Important : changez ce mot de passe en production et définissez un `JWT_SECRET` robuste.
+
 ### Endpoints utiles
 - Entrée: `GET /` → "API is running 🚀"
 - Swagger: `GET /docs`
