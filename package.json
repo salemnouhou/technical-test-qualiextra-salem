@@ -25,7 +25,7 @@
   "scripts": {
     "dev": "concurrently \"nodemon --watch src --ext ts --exec ts-node src/server.ts\" \"tsoa spec\"",
     "build": "tsoa spec && tsc",
-    "start": "node build/server.js"
+    "start": "node build/app.js"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
