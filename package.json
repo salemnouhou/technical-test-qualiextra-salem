@@ -23,7 +23,7 @@
     "tsoa": "^6.6.0"
   },
   "scripts": {
-    "dev": "concurrently \"nodemon --watch src --ext ts --exec ts-node src/server.ts\" \"tsoa spec\"",
+    "dev": "concurrently \"nodemon --watch src --ext ts --exec ts-node src/app.ts\" \"tsoa spec\"",
     "build": "tsoa spec && tsc",
     "start": "node build/app.js"
   },
