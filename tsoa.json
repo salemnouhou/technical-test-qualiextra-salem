@@ -13,7 +13,7 @@
         }
       }
     ],
-      "outputDirectory": "build",
+      "outputDirectory": "src/build",
       "specVersion": 3,
       "securityDefinitions": {
       "jwt": {

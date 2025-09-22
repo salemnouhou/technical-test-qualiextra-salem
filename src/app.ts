@@ -2,7 +2,6 @@ import express, { json,NextFunction, urlencoded, Response as ExResponse, Request
 import { RegisterRoutes } from "./routes"; 
 import swaggerUi from "swagger-ui-express";
 import { ValidateError } from "tsoa";
-import swaggerDocument from "../build/swagger.json";
 
 export const app = express();
 
@@ -10,13 +9,17 @@ app.use(urlencoded({ extended: true }));
 app.use(json());
 
 
-// app.use("/docs", swaggerUi.serve, async (_req: ExRequest, res: ExResponse) => {
-//     return res.send(
-//       swaggerUi.generateHTML(await import("../build/swagger.json"))
-//     );
-//   });
 
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.use(
+  "/docs",
+  swaggerUi.serve,
+  async (_req: ExRequest, res: ExResponse) => {
+    return res.send(
+      swaggerUi.generateHTML(await import("./build/swagger.json"))
+    );
+  }
+);
 
 
 

@@ -41,16 +41,12 @@ const express_1 = __importStar(require("express"));
 const routes_1 = require("./routes");
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const tsoa_1 = require("tsoa");
-const swagger_json_1 = __importDefault(require("../build/swagger.json"));
 exports.app = (0, express_1.default)();
 exports.app.use((0, express_1.urlencoded)({ extended: true }));
 exports.app.use((0, express_1.json)());
-// app.use("/docs", swaggerUi.serve, async (_req: ExRequest, res: ExResponse) => {
-//     return res.send(
-//       swaggerUi.generateHTML(await import("../build/swagger.json"))
-//     );
-//   });
-exports.app.use("/docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
+exports.app.use("/docs", swagger_ui_express_1.default.serve, async (_req, res) => {
+    return res.send(swagger_ui_express_1.default.generateHTML(await Promise.resolve().then(() => __importStar(require("./build/swagger.json")))));
+});
 (0, routes_1.RegisterRoutes)(exports.app);
 exports.app.use(function errorHandler(err, req, res, next) {
     if (err instanceof tsoa_1.ValidateError) {
