@@ -71,7 +71,7 @@ export class AuthService {
     const match = await bcrypt.compare(password, user.password);
     if (!match) throw new Error('Mot de passe incorrect');
 
-    const token = generateToken({ id: user.id, email: user.email, roles: user.roles });
+    const token = generateToken({ id: user.id,firstName: user.firstName, email: user.email, roles: user.roles });
     return { token };
   }
 }

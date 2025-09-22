@@ -35,8 +35,8 @@ const models: TsoaRoute.Models = {
     "ValidateErrorJSON": {
         "dataType": "refObject",
         "properties": {
-            "message": {"dataType":"enum","enums":["Validation failed"],"required":true},
-            "details": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"},"required":true},
+            "message": {"dataType":"string","required":true},
+            "details": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},
         },
         "additionalProperties": false,
     },
@@ -128,10 +128,11 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsUserController_getUser: Record<string, TsoaRoute.ParameterSchema> = {
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
                 userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
         };
         app.get('/users/:userId',
-            authenticateMiddleware([{"jwt":["ADMIN"]}]),
+            authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(UserController)),
             ...(fetchMiddlewares<RequestHandler>(UserController.prototype.getUser)),
 
@@ -306,7 +307,7 @@ export function RegisterRoutes(app: Router) {
                 response,
                 next,
                 validatedArgs,
-                successStatus: undefined,
+                successStatus: 200,
               });
             } catch (err) {
                 return next(err);
