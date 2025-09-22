@@ -25,6 +25,7 @@ export class UserController extends Controller {
   @Response<ValidateErrorJSON>(404, "Utilisateur introuvable")
   @Response<ValidateErrorJSON>(500, "Erreur interne du serveur")
   public async getMe(@Request() req: any) {
+    // Récupère le profil de l'utilisateur courant (id provenant du JWT)
     try {
       return await userService.getMe(req.user.id);
     } catch (err: any) {
@@ -43,6 +44,7 @@ export class UserController extends Controller {
   @Response<ValidateErrorJSON>(500, "Erreur interne du serveur")
   @Get()
   public async getAll(@Request() req: any) {
+    // Accès réservé ADMIN
     try {
       if (!req.user.roles?.includes("ADMIN")) {
         this.setStatus(403);
@@ -67,6 +69,7 @@ export class UserController extends Controller {
   @Response<ValidateErrorJSON>(404, "Utilisateur introuvable")
   @Response<ValidateErrorJSON>(500, "Erreur interne du serveur")
   public async getUser(@Request() req: any, @Path() userId: string) {
+    // Autorise la lecture si ADMIN ou propriétaire de la ressource
     try {
       const isAdmin = req.user.roles?.includes("ADMIN");
       const isOwner = req.user.id === userId;
@@ -98,6 +101,7 @@ export class UserController extends Controller {
     @Path() userId: string,
     @Body() body: UpdateUserInput
   ) {
+    // Mise à jour par le propriétaire ou par un ADMIN (les autres règles sont dans le service)
     try {
       return await userService.updateUser(req.user, userId, body);
     } catch (err: any) {
@@ -121,6 +125,7 @@ export class UserController extends Controller {
   @Response<ValidateErrorJSON>(404, "Utilisateur introuvable")
   @Response<ValidateErrorJSON>(500, "Erreur interne du serveur")
   public async deleteUser(@Path() userId: string) {
+    // Suppression réservée ADMIN
     try {
       return await userService.deleteUser(userId);
     } catch (err: any) {

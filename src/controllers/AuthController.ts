@@ -22,6 +22,7 @@ export class AuthController extends Controller {
   public async register(
     @Body() body: { email: string; password: string; firstName: string; lastName: string }
   ) {
+    // Delègue la logique netier à AuthService et mappe les erreurs vers des codes HTTP
     try {
       const result = await authService.register(
         body.firstName,
@@ -32,10 +33,12 @@ export class AuthController extends Controller {
       this.setStatus(201);
       return result;
     } catch (err: any) {
+      // Validation métier (email jetable / invalide)
       if (err.message.includes("valide")) {
         this.setStatus(400);
         return { message: err.message };
       }
+      // Conflit d'unicité email
       if (err.message.includes("déjà utilisé")) {
         this.setStatus(409);
         return { message: "Cet email appartient déjà à un compte, veuillez vous connecter" };
@@ -54,6 +57,7 @@ export class AuthController extends Controller {
   public async login(
     @Body() body: { email: string; password: string }
   ): Promise<LoginResponse | ValidateErrorJSON> {
+    // Vérifie la présence des champs requis puis délègue à AuthService
     try {
       if (!body.email || !body.password) {
         this.setStatus(400);
@@ -61,6 +65,7 @@ export class AuthController extends Controller {
       }
       return await authService.login(body.email, body.password);
     } catch (err: any) {
+      // Levee d'erreurs métier spécifiques
       if (err.message === "Utilisateur introuvable" || err.message === "Mot de passe incorrect") {
         this.setStatus(401);
         return { message: err.message };
@@ -79,6 +84,7 @@ export class AuthController extends Controller {
   @SuccessResponse("200", "Email vérifié avec succès")
   @Post("verify-email")
   public async verifyEmail(@Body() body: { token: string }): Promise<{ message: string } | ValidateErrorJSON> {
+    // Délègue la vérification du token à AuthService puis mappe les erreurs métier
     try {
       const result = await authService.verifyEmail(body.token);
       this.setStatus(200);

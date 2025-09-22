@@ -5,12 +5,14 @@ import { ValidateError } from "tsoa";
 
 export const app = express();
 
+// Middlewares de parsing de requêtes (form-urlencoded et JSON)
 app.use(urlencoded({ extended: true }));
 app.use(json());
 
 
 
 
+// Route de documentation Swagger servie dynamiquement depuis le fichier généré par TSOA
 app.use(
   "/docs",
   swaggerUi.serve,
@@ -23,8 +25,12 @@ app.use(
 
 
 
+// Injection des routes générées par TSOA à partir des contrôleurs
 RegisterRoutes(app);
 
+// Gestion centralisée des erreurs :
+// - 422 pour les erreurs de validation TSOA
+// - 500 pour toute autre erreur applicative
 app.use(function errorHandler(
   err: unknown,
   req: ExRequest,
@@ -46,4 +52,5 @@ app.use(function errorHandler(
 
   next();
 });
+// Endpoint créé pour vérifier que le serveur tourne
 app.get("/", (req, res) => res.send("API is running 🚀"));
