@@ -23,7 +23,7 @@ import {
       return new UsersService().get(userId, name);
     }
   
-    @SuccessResponse("201", "Created") 
+    @SuccessResponse("201", "Created")
     @Post()
     public async createUser(
       @Body() requestBody: UserCreationParams
